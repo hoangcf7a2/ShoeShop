@@ -4,7 +4,8 @@
   "description": "Shoe shop we you can buy the shoe you want with min price",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --inspect=0.0.0.0 app.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/hoangcf7a2/ShoeShop/issues"
   },
-  "homepage": "https://github.com/hoangcf7a2/ShoeShop#readme"
+  "homepage": "https://github.com/hoangcf7a2/ShoeShop#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
 }

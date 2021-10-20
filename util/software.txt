@@ -1,0 +1,2 @@
+Api lưu ảnh lên server và trả về link
+https://freeimage.host/page/api
