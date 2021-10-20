@@ -1,2 +1,4 @@
+# git rm -r --cached Filename to remove filename from remote branch ,after that each push request will work with git ignore, if not use that command,filename will still exist in remote branch
+# These file below still exist in local branch ,but not in remote branch
 # Dependencies
 /node_modules
