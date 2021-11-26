@@ -33,9 +33,8 @@ const orderSchema = new Schema({
         type:String,
         required:true
     },
-    cardLevel:{
-        type:Schema.Types.ObjectId,
-        ref:'CardLevel',
+    discountMoney:{
+        type:Decimal128,
         required:true
     },
     orderMoney:{

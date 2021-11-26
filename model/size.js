@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const sizeSchema = new Schema({
     sizeNumber:{
         type:Number,
-        required:true
+        required:true,
+        unique:true
     }
 })
 
