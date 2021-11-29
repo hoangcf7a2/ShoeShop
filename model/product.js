@@ -1,63 +1,78 @@
-const { Decimal128 } = require('bson');
-const { truncate } = require('fs');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const productSchema = new Schema({
-    name:{
-        type:String,
-        required:true
+const productSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    brand:{
-        type:Schema.Types.ObjectId,
-        required:true,
-        ref:'Brand'
+    image01: {
+      type: String,
+      required: true,
     },
-    description:{
-        type:String
+    image02: {
+      type: String,
+      required: true,
     },
-    image:{
-        type:String,
-        required:true
+    brand: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Brand',
     },
-    size:[
-        {
-            sizeId:{
-                type:Schema.Types.ObjectId,
-                required:true
-            },
-            quantity:{
-                type:Number,
-                required:true
-            }
-        }
+    size: [
+      {
+        sizeId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+          ref: 'Size',
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
     ],
-    price:{
-        type:Decimal128,
-        required:true
-    },
-    promotionalPrice:{
-        type:Decimal128
-    },
-    category:[
-        {
-            categoryId:Schema.Types.ObjectId,
-            required:true,
-            ref:'Category'
-        }
+    color:[
+      {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Color',
+      }
     ],
-    numberOfVoting:{
-        type:Number,
-        required:true
+    price: {
+      type: mongoose.Decimal128,
+      required: true,
     },
-    votingScore:{
-        type:Number,
-        required:true
+    description: {
+      type: String,
     },
-    isRemoved:{
-        type:Boolean,
-        required:true
-    }
-})
+    category:[ 
+      {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
+      }
+    ],
+    isRemoved: {
+      type: Boolean,
+      default: false,
+    },
 
-module.exports = mongoose.exports('Product',productSchema);
+    // promotionalPrice: {
+    //   type: Decimal128,
+    // },
+
+    // numberOfVoting: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // votingScore: {
+    //   type: Number,
+    //   required: true,
+    // },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Product", productSchema);

@@ -1,0 +1,8 @@
+{
+    "env":{
+        "MONGO_USER":"user1",
+        "MONGO_PASSWORD":"user1",
+        "MONGO_DEFAULT_DATABASE":"ShoeShop",
+        "imgbbKey":"7e5eeb9aeea11d4968a71de0c6d28f7f"
+    }
+}
