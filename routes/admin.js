@@ -4,7 +4,27 @@ const router = express.Router();
 
 const adminController = require('../controller/admin');
 
-// User
+
+/**
+ * @swagger
+ * paths:
+ *   /admin/user:
+ *     post:
+ *      description: Create a new user
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          name:
+ *                              type: string
+ *      responses:
+ *         '201':
+ *          description: OK
+ *         '500':
+ *          description: Error
+ */
 router.post('/user',adminController.createUser);
 router.get('/users',adminController.getUsers);
 router.get('/user/:userId',adminController.getUser);

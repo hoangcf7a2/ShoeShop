@@ -56,7 +56,7 @@ app.use((req,res,next)=>{
 })
 
 const swaggerOptions = {
-  swaggerDefiniton:{
+  swaggerDefinition:{
     info:{
       title:'Shoe shop api',
       description:'Shoe shop api information',
@@ -66,7 +66,7 @@ const swaggerOptions = {
       servers:['https://shoe-shop-demo.herokuapp.com']
     }
   },
-  apis:['app.js','.routes/admin.js']
+  apis:['app.js',`${__dirname}/routes/*.js`]
 }
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
