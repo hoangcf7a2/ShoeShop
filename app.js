@@ -7,6 +7,8 @@ const multer = require('multer');
 const compression = require('compression')
 const { v4: uuidv4 } = require('uuid');
 const helmet = require('helmet');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h18qd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`
 
@@ -52,6 +54,23 @@ app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization'); // cho phép gửi request kèm với header 
     next();
 })
+
+const swaggerOptions = {
+  swaggerDefiniton:{
+    info:{
+      title:'Shoe shop api',
+      description:'Shoe shop api information',
+      contact:{
+        name:'Hoang Pham'
+      },
+      servers:['https://shoe-shop-demo.herokuapp.com']
+    }
+  },
+  apis:['app.js','.routes/admin.js']
+}
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocs));
 
 
 
