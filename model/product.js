@@ -45,7 +45,7 @@ const productSchema = new Schema(
       }
     ],
     price: {
-      type: mongoose.Decimal128,
+      type: String,
       required: true,
     },
     description: {

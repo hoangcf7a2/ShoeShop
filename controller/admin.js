@@ -519,46 +519,46 @@ function convertNameToSlug(str){
 
 
 // Xóa các file đã có trong thư mục
-function cleanFolder(folder){
-    return fs.readdir(folder,(err,files)=>{
-        if(err){
-            console.log(err);
-        }
-        for (const file of files) {
-            filePath = path.join(__dirname,'..',folder+'/'+file);
-            fs.unlink(filePath,err=>{
-                if(err) console.log(err)
-            });
-          }; 
-    })
-}
+// function cleanFolder(folder){
+//     return fs.readdir(folder,(err,files)=>{
+//         if(err){
+//             console.log(err);
+//         }
+//         for (const file of files) {
+//             filePath = path.join(__dirname,'..',folder+'/'+file);
+//             fs.unlink(filePath,err=>{
+//                 if(err) console.log(err)
+//             });
+//           }; 
+//     })
+// }
 
 // Xóa 1 listfile đưa vào
 
-function cleanFiles(files){
-    for(const file in files){
-        filePath = path.join(__dirname,'..',files[file][0].path);
-        fs.unlink(filePath,err=>{
-            if(err) console.log(err)
-        });
-    }
-}
+// function cleanFiles(files){
+//     for(const file in files){
+//         filePath = path.join(__dirname,'..',files[file][0].path);
+//         fs.unlink(filePath,err=>{
+//             if(err) console.log(err)
+//         });
+//     }
+// }
 
-// Xóa 1 file đầu vào
-function cleanFile(file){
-    filePath = path.join(__dirname,'..',file);
-    return fs.unlink(filePath,err=>{
-        if(err) console.log(err)
-    });
-}
+// // Xóa 1 file đầu vào
+// function cleanFile(file){
+//     filePath = path.join(__dirname,'..',file);
+//     return fs.unlink(filePath,err=>{
+//         if(err) console.log(err)
+//     });
+// }
 
-// Chuyển ảnh qua định dạng 64 để đưa lên server ảnh
-function base64_encode(file) {
-    // read binary data
-    var bitmap = fs.readFileSync(file);
-    // convert binary data to base64 encoded string
-    return new Buffer.from(bitmap).toString('base64');
-}
+// // Chuyển ảnh qua định dạng 64 để đưa lên server ảnh
+// function base64_encode(file) {
+//     // read binary data
+//     var bitmap = fs.readFileSync(file);
+//     // convert binary data to base64 encoded string
+//     return new Buffer.from(bitmap).toString('base64');
+// }
 async function uploadImage(listFile,action){
     var resArray=[];
     fileCount = Object.keys(listFile).length||0;

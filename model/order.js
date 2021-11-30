@@ -54,14 +54,14 @@ const orderSchema = new Schema(
 );
 
 orderSchema.methods.getOrderMoney = async function(){
-  const order = this;
-  const sum = '0'
+  const order = this._doc;
+  let sum = 0;
   for(const item of order.items){
-    const price = await Product.findById(item.product).price;
-    sum+=price;
+    const product = await Product.findById(item._doc.product);
+    const priceFloat = parseFloat(product.price);
+    sum+=priceFloat;
   }
-  console.log(sum);
-  return sum;
+  return sum.toString();
 }
 
 module.exports = mongoose.model('Order',orderSchema);
