@@ -572,7 +572,7 @@ async function uploadImage(listFile,action){
         formData.append("key", process.env.imgbbKey);
         // const filePath =listFile[file][0].path;
         // const imageBase64 = base64_encode(filePath);
-        const imageBase64 = listFile[file][0].Buffer.toString('base64');
+        const imageBase64 = listFile[file][0].buffer.toString('base64');
         formData.append("image", imageBase64);
 
         var res = await fetch("https://api.imgbb.com/1/upload", {
@@ -617,14 +617,14 @@ exports.createProduct =  async (req,res,next)=>{
             slug:convertNameToSlug(title)
         });
         const result = await product.save();
-        cleanFiles(req.files)
+        // cleanFiles(req.files)
         res.status(201).json({message:'Product created successfully',product:result});
     }
     catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
           }
-          cleanFiles(req.files);
+        //   cleanFiles(req.files);
           next(err);
     }
 }
@@ -662,14 +662,14 @@ exports.updateProduct = async (req,res,next)=>{
         product.image02 = image02;
         product.slug = convertNameToSlug(title);
         const result = await product.save();
-        cleanFiles(req.files);
+        // cleanFiles(req.files);
         res.status(200).json({message:'Product updated',product:result});
     }
     catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
           }
-          cleanFiles(req.files);
+        //   cleanFiles(req.files);
           next(err);
     }
 }

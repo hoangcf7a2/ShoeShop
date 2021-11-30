@@ -15,14 +15,14 @@ const clientRoute  = require('./routes/client')
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h18qd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'images');
-    },
-    filename: function(req, file, cb) {
-        cb(null, uuidv4() + '-' + file.originalname);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, 'images');
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, uuidv4() + '-' + file.originalname);
+//     }
+// });
 
 // filter dạng file có thể upload
 const fileFilter = (req,file,cb)=>{
@@ -42,7 +42,7 @@ const fileFilter = (req,file,cb)=>{
   }
 // package để có thể truyền body dạng form-data
 // Lưu 2 file image01,image02 vào req.file.
-app.use(multer({storage:storage,fileFilter:fileFilter}).fields([{name:'image01'},{name:'image02'}]));
+app.use(multer({fileFilter:fileFilter}).fields([{name:'image01'},{name:'image02'}]));
 // dùng để lấy phần body chứa dữ liệu thuộc dạng json
 app.use(express.json());
 
