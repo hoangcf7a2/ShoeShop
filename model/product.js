@@ -15,14 +15,18 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    brand: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Brand',
+    slug:{
+      type:String,
+      required:true
     },
-    size: [
+    // brand: {
+    //   type: Schema.Types.ObjectId,
+    //   required: true,
+    //   ref: 'Brand',
+    // },
+    sizeArray: [
       {
-        sizeId: {
+        size: {
           type: Schema.Types.ObjectId,
           required: true,
           ref: 'Size',

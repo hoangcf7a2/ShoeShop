@@ -8,7 +8,6 @@ const bryptjs = require('bcryptjs');
 const FormData = require('form-data')
 const fs = require('fs');
 const path = require('path')
-var deleteCount = 0;
 let fileCount;
 // npm install --save node-fetch@2
 const fetch = require('node-fetch')
@@ -401,6 +400,7 @@ exports.createCategory = async (req,res,next)=>{
     const {name} = req.body
     try{
         const category = new Category({name:name});
+        category.slug = convertNameToSlug(name);
         const result = await category.save();
         res
           .status(201)
@@ -425,6 +425,7 @@ exports.updateCategory = async (req,res,next)=>{
             throw error;
         }
         category.name = name;
+        category.slug = convertNameToSlug(name);
         const result = await category.save();
         res.status(200).json({message:'Category updated',category:result});
     }
@@ -492,12 +493,62 @@ exports.deleteCategory  = async (req,res,next)=>{
 
 //---------------------------------------- Product Controller ----------------------------------------------------------------------------------//
 
-// Xóa ảnh khỏi thư mục images trong project
-const clearImage = filePath =>{
-    filePath = path.join(__dirname,'..',filePath);
-    fs.unlink(filePath,err=>{
+function convertNameToSlug(str){
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+    str = str.replace(/đ/g,"d");
+    // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+    str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+    // Bỏ các khoảng trắng liền nhau
+    str = str.replace(/ + /g," ");
+    // Xóa đi khoảng cách 2 đầu
+    str = str.trim();
+    // Bỏ dấu câu, kí tự đặc biệt
+    // str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+    // Thay khoảng cách trắng bằng dấu - 
+    const slug = str.split(' ').join('-');
+    return slug;
+}
+
+
+
+// Xóa các file đã có trong thư mục
+function cleanFolder(folder){
+    return fs.readdir(folder,(err,files)=>{
+        if(err){
+            console.log(err);
+        }
+        for (const file of files) {
+            filePath = path.join(__dirname,'..',folder+'/'+file);
+            fs.unlink(filePath,err=>{
+                if(err) console.log(err)
+            });
+          }; 
+    })
+}
+
+// Xóa 1 listfile đưa vào
+
+function cleanFiles(files){
+    for(const file in files){
+        filePath = path.join(__dirname,'..',files[file][0].path);
+        fs.unlink(filePath,err=>{
+            if(err) console.log(err)
+        });
+    }
+}
+
+// Xóa 1 file đầu vào
+function cleanFile(file){
+    filePath = path.join(__dirname,'..',file);
+    return fs.unlink(filePath,err=>{
         if(err) console.log(err)
-        deleteCount++;
     });
 }
 
@@ -505,7 +556,6 @@ const clearImage = filePath =>{
 function base64_encode(file) {
     // read binary data
     var bitmap = fs.readFileSync(file);
-    clearImage(file);
     // convert binary data to base64 encoded string
     return new Buffer.from(bitmap).toString('base64');
 }
@@ -520,7 +570,8 @@ async function uploadImage(listFile,action){
     for(var file in listFile){
         let formData = new FormData();
         formData.append("key", process.env.imgbbKey);
-        const imageBase64 = base64_encode(listFile[file][0].path);
+        const filePath =listFile[file][0].path;
+        const imageBase64 = base64_encode(filePath);
         formData.append("image", imageBase64);
 
         var res = await fetch("https://api.imgbb.com/1/upload", {
@@ -544,49 +595,45 @@ async function uploadImage(listFile,action){
 
 // để gửi được file ảnh thì body phải là dạng form -data , thay vì dạng application/json
 exports.createProduct =  async (req,res,next)=>{
-    const listFileDelete = req.files;
     try{
         // Vì upload file là async nên cần await để lấy được resArray\
         const resArray = await uploadImage(req.files,method.create);
-        const {title,brand,size,color,price,description,category} = req.body;
+        const {title,sizeArray,color,price,description,category} = req.body;
         var image01 , image02
         image01 = resArray[0].data.url;
         image02 = resArray[1].data.url;
         // Nếu ảnh trùng base64 thì ko upload ảnh đó , mà chỉ trả về link của ảnh đó đã tồn tại
         const product = new Product({
             title:title,
-            brand:brand,
-            size:size,
+            // brand:brand,
+            sizeArray:sizeArray,
             color:color,
             price:price,
             description:description,
             category:category,
             image01:image01,
-            image02:image02
+            image02:image02,
+            slug:convertNameToSlug(title)
         });
         const result = await product.save();
-        deleteCount=0;
+        cleanFiles(req.files)
         res.status(201).json({message:'Product created successfully',product:result});
     }
     catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
           }
-          // Đọc các file trong thư mục images và xóa tất cả - dùng khi chưa kịp xóa đã dính lỗi
-          const directory = 'images';
-          fs.readdir(directory,(err,files)=>{
-              for (const file of files) {
-                  clearImage('images/'+file)
-                }; 
-          })
+          cleanFiles(req.files);
           next(err);
     }
 }
 
 
 exports.updateProduct = async (req,res,next)=>{
+    console.log(req.body);
+    console.log(req.files);
     const productId = req.params.productId;
-    const {title,brand,size,color,price,description,category} = req.body;
+    const {title,sizeArray,color,price,description,category} = req.body;
     let {image01,image02} = req.body;
     try{
         const product = await Product.findById(productId);
@@ -597,36 +644,48 @@ exports.updateProduct = async (req,res,next)=>{
         }
         // Vì upload file là async nên cần await để lấy được resArray\
         const resArray = await uploadImage(req.files,method.update);
-        try{
-            image01 = resArray[0].data.url;
-            image02 = resArray[1].data.url;
+        if(!image01){
+            image01 = resArray.pop().data.url;
         }
-        catch(err){
-            console.log(err);
+        if(!image02){
+            image02 = resArray.pop().data.url;
         }
         product.title = title;
-        product.brand = brand;
-        product.size = size;
+        // product.brand = brand;
+        product.sizeArray = sizeArray;
         product.color = color;
         product.price = price;
         product.description = description;
         product.category = category;
         product.image01 = image01;
         product.image02 = image02;
+        product.slug = convertNameToSlug(title);
         const result = await product.save();
+        cleanFiles(req.files);
         res.status(200).json({message:'Product updated',product:result});
     }
     catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
           }
+          cleanFiles(req.files);
           next(err);
     }
 }
 
 exports.getProducts =  async (req,res,next)=>{
     try{
-        const products = await Product.find();
+        const products = await Product.find({isRemoved:false}).populate([
+            {
+                path:'sizeArray.size'
+            },
+            {
+                path:'color'
+            },
+            {
+                path:'category'
+            }
+        ]);
         res.status(200).json({message:'Fetched Products Successfully',products:products});
     }
     catch(err){
@@ -641,7 +700,18 @@ exports.getProducts =  async (req,res,next)=>{
 exports.getProduct = async (req,res,next)=>{
     const productId = req.params.productId;
     try{
-        const product = await Product.findById(productId);
+        const product = await Product.findOne({_id:productId,isRemoved:false})
+        .populate([
+            {
+                path:'sizeArray.size'
+            },
+            {
+                path:'color'
+            },
+            {
+                path:'category'
+            }
+        ]);
         if(!product){
             const error = new Error('Could not find product');
             error.statusCode = 404;
@@ -666,7 +736,7 @@ exports.deleteProduct  = async (req,res,next)=>{
             error.statusCode = 404;
             throw error;
         }
-        await Product.findByIdAndRemove(productId);
+        product.isRemoved = true;
         res.status(200).json({message:'Delete Product Successfully'});
     }
     catch(err){
@@ -676,3 +746,6 @@ exports.deleteProduct  = async (req,res,next)=>{
         next(err);
     }
 }
+
+//---------------------------------------- Order Controller ----------------------------------------------------------------------------------//
+
