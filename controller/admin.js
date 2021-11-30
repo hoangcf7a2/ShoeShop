@@ -570,8 +570,9 @@ async function uploadImage(listFile,action){
     for(var file in listFile){
         let formData = new FormData();
         formData.append("key", process.env.imgbbKey);
-        const filePath =listFile[file][0].path;
-        const imageBase64 = base64_encode(filePath);
+        // const filePath =listFile[file][0].path;
+        // const imageBase64 = base64_encode(filePath);
+        const imageBase64 = listFile[file][0].Buffer.toString('base64');
         formData.append("image", imageBase64);
 
         var res = await fetch("https://api.imgbb.com/1/upload", {
@@ -675,7 +676,7 @@ exports.updateProduct = async (req,res,next)=>{
 
 exports.getProducts =  async (req,res,next)=>{
     try{
-        const products = await Product.find({isRemoved:false}).populate([
+        var products = await Product.find({isRemoved:false}).populate([
             {
                 path:'sizeArray.size'
             },
@@ -746,6 +747,4 @@ exports.deleteProduct  = async (req,res,next)=>{
         next(err);
     }
 }
-
-//---------------------------------------- Order Controller ----------------------------------------------------------------------------------//
 

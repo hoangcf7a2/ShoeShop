@@ -1,17 +1,16 @@
-
+const Product = require('../model/product');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
+    name:{
+      type:String,
+      required:true
     },
-    products: [
+    items: [
       {
-        productId: {
+        product: {
           type: Schema.Types.ObjectId,
           required: true,
           ref: "Product",
@@ -32,26 +31,37 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      required: true,
+      default:'pending'
     },
-    discountMoney: {
-      type: mongoose.Decimal128,
-      required: true,
-    },
+    // discountMoney: {
+    //   type: mongoose.Decimal128,
+    //   required: true,
+    // },
     orderMoney: {
-      type: mongoose.Decimal128,
+      type: String,
       required: true,
     },
     deliveryMoney: {
-      type: mongoose.Decimal128,
-      required: true,
+      type: String,
+      default:'30000'
     },
     totalMoney: {
-      type: mongoose.Decimal128,
+      type: String,
       required: true,
     },
   },
   { timestamps: true }
 );
+
+orderSchema.methods.getOrderMoney = async function(){
+  const order = this;
+  const sum = '0'
+  for(const item of order.items){
+    const price = await Product.findById(item.product).price;
+    sum+=price;
+  }
+  console.log(sum);
+  return sum;
+}
 
 module.exports = mongoose.model('Order',orderSchema);

@@ -2,13 +2,16 @@ const express = require('express');
 const app = express();
 const process = require('process');
 const mongoose = require('mongoose');
-const adminRoute  = require('./routes/admin')
 const multer = require('multer');
 const compression = require('compression')
 const { v4: uuidv4 } = require('uuid');
 const helmet = require('helmet');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+
+
+const adminRoute  = require('./routes/admin')
+const clientRoute  = require('./routes/client')
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h18qd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`
 
@@ -75,6 +78,8 @@ app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocs));
 
 
 app.use('/admin',adminRoute)
+
+app.use(clientRoute)
 
 app.use((error,req,res,next)=>{
     const statusCode = error.statusCode || 500;

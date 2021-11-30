@@ -65,4 +65,5 @@ router.put('/product/:productId',adminController.updateProduct);
 router.get('/products',adminController.getProducts);
 router.get('/product/:productId',adminController.getProduct);
 router.delete('/product/:productId',adminController.deleteProduct);
+
 module.exports = router;
