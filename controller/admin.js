@@ -4,10 +4,12 @@ const Color = require('../model/color');
 const Brand = require('../model/brand');
 const Category = require('../model/category');
 const Product = require('../model/product')
+const Order = require('../model/order')
 const bryptjs = require('bcryptjs');
 const FormData = require('form-data')
 const fs = require('fs');
 const path = require('path')
+const listStatus = require('../utils/status')
 let fileCount;
 // npm install --save node-fetch@2
 const fetch = require('node-fetch')
@@ -568,7 +570,7 @@ async function uploadImage(listFile,action){
         throw error;
     }
     for(var file in listFile){
-        let formData = new FormData();
+        var formData = new FormData();
         formData.append("key", process.env.imgbbKey);
         // const filePath =listFile[file][0].path;
         // const imageBase64 = base64_encode(filePath);
@@ -635,7 +637,7 @@ exports.updateProduct = async (req,res,next)=>{
     console.log(req.files);
     const productId = req.params.productId;
     const {title,sizeArray,color,price,description,category} = req.body;
-    let {image01,image02} = req.body;
+    var {image01,image02} = req.body;
     try{
         const product = await Product.findById(productId);
         if(!product){
@@ -748,3 +750,101 @@ exports.deleteProduct  = async (req,res,next)=>{
     }
 }
 
+//----------------------------------------Order Controller ----------------------------------------------------------------------------------//
+
+exports.updateOrder = async (req,res,next)=>{
+    const orderId = req.params.orderId;
+    const {status} = req.body
+    try{
+        const order = await Order.findById(orderId);
+        if(!order){
+            const error = new Error('Could not find Order');
+            error.statusCode = 404;
+            throw error;
+        }
+        const statusCount = Object.keys(listStatus).length||0;
+        var invalidStatusCount = 0;
+        for(var item in listStatus){
+            if(listStatus[item] !== status){
+                invalidStatusCount++;
+            }
+        }
+        if(invalidStatusCount === statusCount){
+            const error = new Error('Status selected is invalid');
+            error.statusCode = 402;
+            throw error;
+        }
+        // Xet su hop le cua status truoc sau
+        const oldStatus = order.status;
+        var errorFlag = false;
+        switch(oldStatus){
+            case listStatus.pending:
+                if(status === listStatus.pending || status ===listStatus.succeeded ){
+                    errorFlag = true;
+                }
+                break;
+            case listStatus.shipping:
+                if(status === listStatus.pending || status ===listStatus.shipping ){
+                    errorFlag = true;
+                }
+                break;
+            case listStatus.succeeded:
+                if(status === listStatus.pending || status ===listStatus.shipping || status ===listStatus.succeeded || status ===listStatus.failed ){
+                    errorFlag = true;
+                }
+                break;
+            case listStatus.failed:
+                if(status === listStatus.pending || status ===listStatus.shipping || status ===listStatus.succeeded || status ===listStatus.failed ){
+                    errorFlag = true;
+                }
+        }
+        if(errorFlag){
+            const error = new Error('Status selected is invalid');
+            error.statusCode = 402;
+            throw error;
+        }
+        order.status = status;
+        const result = await order.save();
+        res.status(200).json({message:'Order status updated',order:result});
+    }
+    catch(err){
+        if(!err.statusCode){
+            err.statusCode = 500;
+          }
+          next(err);
+    }
+}
+
+exports.getOrders =  async (req,res,next)=>{
+    try{
+        const orders = await Order.find().populate({
+            path:'items.product'
+        });
+        res.status(200).json({message:'Fetched Order Successfully',orders:orders});
+    }
+    catch(err){
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
+exports.getOrder = async (req,res,next)=>{
+    const orderId = req.params.orderId;
+    try{
+        const order = await Order.findById(orderId).populate({path:'items.product'});
+        if(!order){
+            const error = new Error('Could not find order');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({message:'Fetched order',order:order});
+    }
+    catch(err){
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}

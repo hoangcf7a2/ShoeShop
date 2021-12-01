@@ -66,4 +66,8 @@ router.get('/products',adminController.getProducts);
 router.get('/product/:productId',adminController.getProduct);
 router.delete('/product/:productId',adminController.deleteProduct);
 
+// Order
+router.put('/order/:orderId',adminController.updateOrder);
+router.get('/orders',adminController.getOrders);
+router.get('/order/:orderId',adminController.getOrder);
 module.exports = router;

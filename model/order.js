@@ -1,6 +1,7 @@
 const Product = require('../model/product');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const listStatus = require('../utils/status')
 
 const orderSchema = new Schema(
   {
@@ -31,7 +32,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      default:'pending'
+      default:listStatus.pending
     },
     // discountMoney: {
     //   type: mongoose.Decimal128,

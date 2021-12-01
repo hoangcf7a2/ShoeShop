@@ -1,6 +1,6 @@
 const Order = require('../model/order');
 //---------------------------------------- Order Controller ----------------------------------------------------------------------------------//
-exports.creatOrder = async (req,res,next)=>{
+exports.createOrder = async (req,res,next)=>{
     console.log(req.body)
     const {name,items,address,phone} = req.body
     try{
@@ -21,3 +21,24 @@ exports.creatOrder = async (req,res,next)=>{
         next(err);
     }
 }
+
+exports.getOrder = async (req,res,next)=>{
+    const {orderId,phone} = req.body;
+    console.log(orderId,phone)
+    try{
+        const order = await Order.findOne({_id:orderId,phone:phone}).populate({path:'items.product'});
+        if(!order){
+            const error = new Error('Could not find order');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({message:'Fetched order',order:order});
+    }
+    catch(err){
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
