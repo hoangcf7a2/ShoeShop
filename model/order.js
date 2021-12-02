@@ -103,7 +103,6 @@ orderSchema.methods.sendMail = async function(){
   try{
     const order = this ;
     // const orderPopulate = await order.populate(['items.product']);
-    console.log(orderPopulate)
     const html = await getHtml(path.join(__dirname,'..','views','receipt.ejs'),order);
     // console.log(html)
     const message = {
@@ -118,6 +117,7 @@ orderSchema.methods.sendMail = async function(){
     return true;
   }
   catch(err){
+    console.log(err);
     return false;
   }
 }
