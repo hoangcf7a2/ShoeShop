@@ -5,7 +5,7 @@ const Brand = require('../model/brand');
 const Category = require('../model/category');
 const Product = require('../model/product')
 const Order = require('../model/order')
-const bryptjs = require('bcryptjs');
+const bcryptjs = require('bcryptjs');
 const FormData = require('form-data')
 const fs = require('fs');
 const path = require('path')
@@ -23,8 +23,7 @@ const method={
 exports.createUser = async (req,res,next)=>{
     const {name,email,phone,password} = req.body;
     try{
-        const hashedPassword = await bryptjs.hash(password,12) ; 
-        bcryptjs.genSalt()
+        const hashedPassword = await bcryptjs.hash(password,12) ; 
         const user = new User({name:name,email:email,phone:phone,password:hashedPassword});
         const result = await user.save();
         res
