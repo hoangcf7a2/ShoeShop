@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { schema } = require("./order");
 const Schema = mongoose.Schema;
 
 const sizeExtraSchema = new Schema({
@@ -84,4 +85,5 @@ const productSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product',productSchema);
+

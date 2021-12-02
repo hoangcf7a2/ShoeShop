@@ -1,3 +1,4 @@
+
 const Product = require('../model/product');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -5,9 +6,11 @@ const listStatus = require('../utils/status')
 const sendGridMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
-sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs =require('fs');
 
+
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
+console.log(process.env.SENDGRID_API_KEY)
 const orderSchema = new Schema(
   {
     name:{
@@ -22,8 +25,7 @@ const orderSchema = new Schema(
       {
         product: {
           type: Object,
-          required:true,
-          ref:'Product'
+          required:true
         },
         quantity: {
           type: Number,
@@ -102,9 +104,9 @@ async function getHtml(link,order){
 orderSchema.methods.sendMail = async function(){
   try{
     const order = this ;
-    const orderPopulate = await order.populate(['items.product','items.size']);
+    // const orderPopulate = await order.populate(['items.product']);
     console.log(orderPopulate)
-    const html = await getHtml(path.join(__dirname,'..','views','receipt.ejs'),orderPopulate);
+    const html = await getHtml(path.join(__dirname,'..','views','receipt.ejs'),order);
     // console.log(html)
     const message = {
       to:order.email,
