@@ -4,7 +4,7 @@ const shortId = require('shortid');
 exports.createOrder = async (req,res,next)=>{
     const {name,items,address,phone,email} = req.body
     try{
-        const order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email});
+        const order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString()});
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;

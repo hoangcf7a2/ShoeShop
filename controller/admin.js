@@ -562,40 +562,40 @@ function convertNameToSlug(str){
 //     // convert binary data to base64 encoded string
 //     return new Buffer.from(bitmap).toString('base64');
 // }
-async function uploadImage(listFile,action){
-    var resArray=[];
-    fileCount = Object.keys(listFile).length||0;
-    if(fileCount<2 && action === method.create){
-        const error = new Error('Need 2 images to create this product');
-        error.statusCode = 402;
-        throw error;
-    }
-    for(var file in listFile){
-        var formData = new FormData();
-        formData.append("key", process.env.imgbbKey);
-        // const filePath =listFile[file][0].path;
-        // const imageBase64 = base64_encode(filePath);
-        const imageBase64 = listFile[file][0].buffer.toString('base64');
-        formData.append("image", imageBase64);
+// async function uploadImage(listFile,action){
+//     var resArray=[];
+//     fileCount = Object.keys(listFile).length||0;
+//     if(fileCount<2 && action === method.create){
+//         const error = new Error('Need 2 images to create this product');
+//         error.statusCode = 402;
+//         throw error;
+//     }
+//     for(var file in listFile){
+//         var formData = new FormData();
+//         formData.append("key", process.env.imgbbKey);
+//         // const filePath =listFile[file][0].path;
+//         // const imageBase64 = base64_encode(filePath);
+//         const imageBase64 = listFile[file][0].buffer.toString('base64');
+//         formData.append("image", imageBase64);
 
-        var res = await fetch("https://api.imgbb.com/1/upload", {
-          method: "POST",
-          body: formData,
-          Headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+//         var res = await fetch("https://api.imgbb.com/1/upload", {
+//           method: "POST",
+//           body: formData,
+//           Headers: {
+//             "Content-Type": "multipart/form-data",
+//           },
+//         });
 
-        var resData = await res.json();
-        if(resData.error){
-            const error = new Error(resData.error.message);
-            error.statusCode = resData['status_code'];
-            throw error;
-        }
-        resArray.push(resData);
-    }
-        return resArray;
-}
+//         var resData = await res.json();
+//         if(resData.error){
+//             const error = new Error(resData.error.message);
+//             error.statusCode = resData['status_code'];
+//             throw error;
+//         }
+//         resArray.push(resData);
+//     }
+//         return resArray;
+// }
 
 // để gửi được file ảnh thì body phải là dạng form -data , thay vì dạng application/json
 exports.createProduct =  async (req,res,next)=>{
@@ -634,11 +634,9 @@ exports.createProduct =  async (req,res,next)=>{
 
 
 exports.updateProduct = async (req,res,next)=>{
-    console.log(req.body);
-    console.log(req.files);
     const productId = req.params.productId;
-    const {title,sizeArray,color,price,description,category} = req.body;
-    var {image01,image02} = req.body;
+    const {title,sizeArray,color,price,description,category,image01,image02} = req.body;
+    // var {image01,image02} = req.body;
     try{
         const product = await Product.findById(productId);
         if(!product){
@@ -647,13 +645,13 @@ exports.updateProduct = async (req,res,next)=>{
             throw error;
         }
         // Vì upload file là async nên cần await để lấy được resArray\
-        const resArray = await uploadImage(req.files,method.update);
-        if(!image01){
-            image01 = resArray.pop().data.url;
-        }
-        if(!image02){
-            image02 = resArray.pop().data.url;
-        }
+        // const resArray = await uploadImage(req.files,method.update);
+        // if(!image01){
+        //     image01 = resArray.pop().data.url;
+        // }
+        // if(!image02){
+        //     image02 = resArray.pop().data.url;
+        // }
         product.title = title;
         // product.brand = brand;
         product.sizeArray = sizeArray;

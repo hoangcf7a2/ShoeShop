@@ -29,6 +29,11 @@ const orderSchema = new Schema(
           type: Number,
           required: true,
         },
+        size:{
+          type: Schema.Types.ObjectId,
+          required: true,
+          ref: "Size",
+        }
       },
     ],
     address: {
@@ -62,6 +67,10 @@ const orderSchema = new Schema(
     orderCode:{
       type:String,
       required:true
+    },
+    orderDate:{
+      type:String,
+      required:true
     }
   },
   { timestamps: true }
@@ -73,13 +82,14 @@ orderSchema.methods.getOrderMoney = async function(){
   for(const item of order.items){
     const product = await Product.findById(item.product);
     const priceFloat = parseFloat(product.price);
-    sum+=priceFloat;
+    sum+=priceFloat*item.quantity;
   }
   return sum.toString();
 }
 
 async function getHtml(link,order){
   try{
+    // render file định dạng ejs(dynamic html file)
     const html = await ejs.renderFile(link,{order:order})
     // const html = fs.readFileSync(link,{encoding:'utf-8'});
     return html;
@@ -93,9 +103,10 @@ async function getHtml(link,order){
 orderSchema.methods.sendMail = async function(){
   try{
     const order = this ;
-    const orderPopulate = await order.populate('items.product');
+    const orderPopulate = await order.populate(['items.product','items.size']);
+    console.log(orderPopulate)
     const html = await getHtml('D:\\Code\\Year 4 TLCN\\shoe shop\\views\\receipt.ejs',orderPopulate);
-    console.log(html)
+    // console.log(html)
     const message = {
       to:order.email,
       from:'hoangsendmail@gmail.com',
