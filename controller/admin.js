@@ -601,11 +601,11 @@ async function uploadImage(listFile,action){
 exports.createProduct =  async (req,res,next)=>{
     try{
         // Vì upload file là async nên cần await để lấy được resArray\
-        const resArray = await uploadImage(req.files,method.create);
-        const {title,sizeArray,color,price,description,category} = req.body;
-        var image01 , image02
-        image01 = resArray[0].data.url;
-        image02 = resArray[1].data.url;
+        // const resArray = await uploadImage(req.files,method.create);
+        const {title,sizeArray,color,price,description,category,image01,image02} = req.body;
+        // var image01 , image02
+        // image01 = resArray[0].data.url;
+        // image02 = resArray[1].data.url;
         // Nếu ảnh trùng base64 thì ko upload ảnh đó , mà chỉ trả về link của ảnh đó đã tồn tại
         const product = new Product({
             title:title,

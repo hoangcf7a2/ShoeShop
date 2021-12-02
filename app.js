@@ -45,6 +45,10 @@ const fileFilter = (req,file,cb)=>{
 // package để có thể truyền body dạng form-data
 // Lưu 2 file image01,image02 vào req.file.
 app.use(multer({fileFilter:fileFilter}).fields([{name:'image01'},{name:'image02'}]));
+
+// để sử dụng ejs - dynamic value view
+app.set('view engine','ejs');
+app.set('views','views');
 // dùng để lấy phần body chứa dữ liệu thuộc dạng json
 app.use(express.json());
 

@@ -9,11 +9,11 @@ const productSchema = new Schema(
     },
     image01: {
       type: String,
-      // required: true,
+      required: true,
     },
     image02: {
       type: String,
-      // required: true,
+      required: true,
     },
     slug:{
       type:String,

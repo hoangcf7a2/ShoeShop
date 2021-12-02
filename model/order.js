@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const listStatus = require('../utils/status')
 const sendGridMail = require('@sendgrid/mail');
+const ejs = require('ejs');
 const path = require('path');
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs =require('fs');
@@ -77,11 +78,10 @@ orderSchema.methods.getOrderMoney = async function(){
   return sum.toString();
 }
 
-function getHtml(link){
+async function getHtml(link,order){
   try{
-    console.log(link)
-    const html = fs.readFileSync(link,{encoding:'utf-8'});
-    console.log('abc'+html)
+    const html = await ejs.renderFile(link,{order:order})
+    // const html = fs.readFileSync(link,{encoding:'utf-8'});
     return html;
   }
   catch(err){
@@ -93,13 +93,14 @@ function getHtml(link){
 orderSchema.methods.sendMail = async function(){
   try{
     const order = this ;
-    const html = getHtml('D:\\Code\\Year 4 TLCN\\shoe shop\\public\\html\\revoice.html');
+    const orderPopulate = await order.populate('items.product');
+    const html = await getHtml('D:\\Code\\Year 4 TLCN\\shoe shop\\views\\receipt.ejs',orderPopulate);
     console.log(html)
     const message = {
       to:order.email,
       from:'hoangsendmail@gmail.com',
       subject:` #${order.orderCode} -Thông báo đặt hàng thành công từ ShoeShop`,
-      'text':'abc',
+      text:`Xin chào Lương Thế Anh ,Shoeshop xin thông báo đã nhận được đơn đặt hàng mang mã số ${order.orderCode} của bạn.Đơn hàng của bạn đang được tiếp nhận và trong quá trình xử lí. Dưới đây là thông tin đơn hàng, bạn cũng có thể theo dõi trạng thái đơn hàng bất cứ lúc nào bạn muốn`,
       html:html
     }
     // Với sendgridmail chỉ có subject không thì sẽ bị lỗi( mail thường thì vẫn không sao)
