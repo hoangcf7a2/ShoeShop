@@ -3,7 +3,7 @@ const {body} = require('express-validator');
 const router = express.Router();
 
 const adminController = require('../controller/admin');
-
+const isAuth = require('../middleware/is-auth');
 
 /**
  * @swagger

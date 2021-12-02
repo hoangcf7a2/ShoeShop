@@ -8,9 +8,11 @@ const { v4: uuidv4 } = require('uuid');
 const helmet = require('helmet');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path')
 
 
 const adminRoute  = require('./routes/admin')
+const authRoute  = require('./routes/auth')
 const clientRoute  = require('./routes/client')
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h18qd.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`
@@ -46,6 +48,9 @@ app.use(multer({fileFilter:fileFilter}).fields([{name:'image01'},{name:'image02'
 // dùng để lấy phần body chứa dữ liệu thuộc dạng json
 app.use(express.json());
 
+// link được các file trong thư mục public để gọi được ở thư mục khác
+app.use(express.static(path.join(__dirname,'public')))
+app.use(express.static(path.join(__dirname,'images')))
 // giảm dung lượng các file asset upload lên
 app.use(compression());
 //set HTTP headers de protect nodeapp
@@ -78,7 +83,7 @@ app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocs));
 
 
 app.use('/admin',adminRoute)
-
+app.use(authRoute)
 app.use(clientRoute)
 
 app.use((error,req,res,next)=>{

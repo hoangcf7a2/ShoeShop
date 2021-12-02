@@ -24,6 +24,7 @@ exports.createUser = async (req,res,next)=>{
     const {name,email,phone,password} = req.body;
     try{
         const hashedPassword = await bryptjs.hash(password,12) ; 
+        bcryptjs.genSalt()
         const user = new User({name:name,email:email,phone:phone,password:hashedPassword});
         const result = await user.save();
         res

@@ -1,6 +1,7 @@
-
+const bcryptjs = require('bcryptjs');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const jwt = require('jsonwebtoken');
 
 const userSchema = new Schema(
   {
@@ -21,7 +22,8 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-    }
+    },
+    token:String
   },
   {timestamps:true}
   // address:[
@@ -93,5 +95,44 @@ const userSchema = new Schema(
   // resetToken:String,
   // resetTokenExpiration:Date
 );
+
+// so sánh password người dùng nhập vào và password gốc của user
+userSchema.methods.comparePassword = async function(password){
+  const user = this;
+  const result = await bcryptjs.compare(password,user.password); // true hoặc false
+  return result;
+}
+
+//Tìm kiếm user bằng token thay vì phải đăng nhập bằng username password
+userSchema.statics.findByToken = async function (token) {
+	if (!token) {
+		return false;
+	} 
+  else {
+		const payload = jwt.verify(token, process.env.SECRET_KEY); // Lấy payload từ token, từ đó lấy ra userId,email của token
+    console.log(payload);
+		const result = await this.findOne({ _id: payload.userId, email:payload.email,token: token }); // tìm xem có user nào có userId,email,token tương ứng không
+		return result;
+	}
+};
+
+//Tạo ra token và lưu vào database
+userSchema.methods.generateToken = async function () {
+	const user = this;
+  // Tạo token từ email,userId thông qua khóa bí mật
+	user.token = jwt.sign({email:this.email,userId:this._id.toString()}, process.env.SECRET_KEY);
+	const result = await user.save();               
+	return user.token;
+};
+
+//Delete token trong database
+userSchema.methods.deleteToken = async function () {
+	const user = this;
+  // $unset là xóa đi trường tương ứng của document
+  // hàm updateOne của document của mongoose
+	const result = await user.updateOne({ $unset: { token: 1 } });
+	return result;
+};
+
 
 module.exports = mongoose.model('User',userSchema);
