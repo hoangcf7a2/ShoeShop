@@ -27,7 +27,7 @@ exports.createOrder = async (req,res,next)=>{
 exports.getOrder = async (req,res,next)=>{
     const {orderCode,phone} = req.body;
     try{
-        const order = await Order.findOne({orderCode:orderCode,phone:phone}).populate({path:'items.product'});
+        const order = await Order.findOne({orderCode:orderCode,phone:phone});
         if(!order){
             const error = new Error('Could not find order');
             error.statusCode = 404;

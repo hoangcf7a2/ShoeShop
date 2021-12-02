@@ -816,9 +816,7 @@ exports.updateOrder = async (req,res,next)=>{
 
 exports.getOrders =  async (req,res,next)=>{
     try{
-        const orders = await Order.find().populate({
-            path:'items.product'
-        });
+        const orders = await Order.find();
         res.status(200).json({message:'Fetched Order Successfully',orders:orders});
     }
     catch(err){
@@ -832,7 +830,7 @@ exports.getOrders =  async (req,res,next)=>{
 exports.getOrder = async (req,res,next)=>{
     const orderId = req.params.orderId;
     try{
-        const order = await Order.findById(orderId).populate({path:'items.product'});
+        const order = await Order.findById(orderId);
         if(!order){
             const error = new Error('Could not find order');
             error.statusCode = 404;
