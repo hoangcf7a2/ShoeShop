@@ -105,13 +105,13 @@ orderSchema.methods.sendMail = async function(){
     const order = this ;
     const orderPopulate = await order.populate(['items.product','items.size']);
     console.log(orderPopulate)
-    const html = await getHtml('D:\\Code\\Year 4 TLCN\\shoe shop\\views\\receipt.ejs',orderPopulate);
+    const html = await getHtml(path.join(__dirname,'..','views','receipt.ejs'),orderPopulate);
     // console.log(html)
     const message = {
       to:order.email,
       from:'hoangsendmail@gmail.com',
       subject:` #${order.orderCode} -Thông báo đặt hàng thành công từ ShoeShop`,
-      text:`Xin chào Lương Thế Anh ,Shoeshop xin thông báo đã nhận được đơn đặt hàng mang mã số ${order.orderCode} của bạn.Đơn hàng của bạn đang được tiếp nhận và trong quá trình xử lí. Dưới đây là thông tin đơn hàng, bạn cũng có thể theo dõi trạng thái đơn hàng bất cứ lúc nào bạn muốn`,
+      text:`Xin chào Lương Thế Anh ,Shoeshop xin thông báo đã nhận được đơn đặt hàng mang mã số ${order.orderCode} của bạn.Đơn hàng của bạn đang được tiếp nhận và trong quá trình xử lí. Nhân viên sẽ liên hệ với bạn ngay khi đơn hàng đã sẵn sàng để chuyển đi`,
       html:html
     }
     // Với sendgridmail chỉ có subject không thì sẽ bị lỗi( mail thường thì vẫn không sao)
