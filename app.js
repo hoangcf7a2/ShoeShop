@@ -54,7 +54,7 @@ app.use(express.json());
 
 // link được các file trong thư mục public để gọi được ở thư mục khác
 app.use(express.static(path.join(__dirname,'public')))
-app.use(express.static(path.join(__dirname,'images')))
+app.use(express.static(path.join(__dirname,'assets','images')))
 // giảm dung lượng các file asset upload lên
 app.use(compression());
 //set HTTP headers de protect nodeapp

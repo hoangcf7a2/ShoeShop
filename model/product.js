@@ -1,6 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const sizeExtraSchema = new Schema({
+  size: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Size',
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+})
+
 const productSchema = new Schema(
   {
     title: {
@@ -26,16 +38,9 @@ const productSchema = new Schema(
     // },
     sizeArray: [
       {
-        size: {
-          type: Schema.Types.ObjectId,
-          required: true,
-          ref: 'Size',
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
+        type:sizeExtraSchema,
+        required:true
+      }
     ],
     color:[
       {
