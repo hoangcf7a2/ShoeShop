@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { schema } = require("./order");
 const Schema = mongoose.Schema;
 
 const sizeExtraSchema = new Schema({

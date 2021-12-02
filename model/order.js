@@ -1,4 +1,3 @@
-
 const Product = require('../model/product');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -6,11 +5,9 @@ const listStatus = require('../utils/status')
 const sendGridMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs =require('fs');
 
-
-sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
-console.log(process.env.SENDGRID_API_KEY)
 const orderSchema = new Schema(
   {
     name:{
@@ -24,9 +21,9 @@ const orderSchema = new Schema(
     items: [
       {
         product: {
-          type:Schema.Types.ObjectId,
+          type: Object,
           required:true,
-          ref:'Product'
+          // ref:'Product'
         },
         quantity: {
           type: Number,
@@ -82,8 +79,8 @@ orderSchema.methods.getOrderMoney = async function(){
   const order = this;
   let sum = 0;
   for(const item of order.items){
-    const product = await Product.findById(item.product);
-    const priceFloat = parseFloat(product.price);
+    // const product = await Product.findById(item.product);
+    const priceFloat = parseFloat(item.product.price);
     sum+=priceFloat*item.quantity;
   }
   return sum.toString();
