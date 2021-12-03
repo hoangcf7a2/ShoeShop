@@ -92,7 +92,7 @@ exports.deleteUser  = async (req,res,next)=>{
 
 exports.updateUser = async (req,res,next)=>{
     const userId = req.params.userId;
-    const {phone,name} = req.body;
+    const {phone,name,email} = req.body;
     try{
         const user = await User.findById(userId);
         if(!user){
@@ -102,6 +102,7 @@ exports.updateUser = async (req,res,next)=>{
         }
         user.phone = phone;
         user.name = name;
+        user.email = email;
         const result = await user.save();
         res.status(200).json({message:'User updated',user:result});
     }
