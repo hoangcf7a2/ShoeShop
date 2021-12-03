@@ -3,13 +3,15 @@ const shortId = require('shortid');
 //---------------------------------------- Order Controller ----------------------------------------------------------------------------------//
 exports.createOrder = async (req,res,next)=>{
     const {name,items,address,phone,email} = req.body
+    var order;
+    var removeResult=false;
     try{
-        const order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString()});
+        order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString()});
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;
         // Thực hiện xóa quantity của product với size tương ứng
-        const removeResult = order.removeQuantity();
+        removeResult = order.removeQuantity(); // true hoặc false
         if(!removeResult){
             const error = new Error('Product is not enough quantity to create this order');
             error.statusCode = 422;
@@ -25,6 +27,10 @@ exports.createOrder = async (req,res,next)=>{
     catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
+        }
+        // Nếu đã remove quantity nhưng lại bị lỗi lưu order thì phải cộng lại quantity
+        if(removeResult === true){
+            const result = await order.addQuantity();
         }
         console.log(err);
         next(err);

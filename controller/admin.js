@@ -802,6 +802,10 @@ exports.updateOrder = async (req,res,next)=>{
             error.statusCode = 402;
             throw error;
         }
+        if(status === listStatus.failed){
+            // Nếu đơn hàng bị thất bại thì phải tăng lại quantity đã mua cho sản phẩm
+            await order.addQuantity();
+        }
         order.status = status;
         const result = await order.save();
         res.status(200).json({message:'Order status updated',order:result});

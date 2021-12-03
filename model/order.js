@@ -161,5 +161,33 @@ orderSchema.methods.removeQuantity = async function(){
     return false;
   }
 }
+// dùng để add lại quantity khi có lỗi không add được order 
+orderSchema.methods.addQuantity = async function(){
+  try{
+    const order = this;
+    for(const item of order.items){
+      // Tìm ra id của size đã chọn của item tương ứng
+      const sizePicked = await Size.findOne({sizeNumber:item.size});
+      // TÌm product tương ứng với item
+      const product = await Product.findOne({_id:item.product._id});
+      // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và tăng quantity lại
+      product.sizeArray.some(function(element,index){
+        console.log(element)
+        if(element.size.toString() === sizePicked._id.toString() && element.quantity>item.quantity){
+          element.quantity+=item.quantity;
+          // console.log(element)
+          return true;
+        }
+      })
+      await product.save();
+    }
+    // Trả về true nếu tất cả các product đều đã được tăng quantity trở lại
+    return true;
+  }
+  catch(err){
+    console.log(err);
+    return false;
+  }
+}
 
 module.exports = mongoose.model('Order',orderSchema);
