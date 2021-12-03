@@ -738,6 +738,7 @@ exports.deleteProduct  = async (req,res,next)=>{
             throw error;
         }
         product.isRemoved = true;
+        const result = await product.save();
         res.status(200).json({message:'Delete Product Successfully'});
     }
     catch(err){

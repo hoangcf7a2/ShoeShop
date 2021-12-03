@@ -122,4 +122,11 @@ orderSchema.methods.sendMail = async function(){
   }
 }
 
+orderSchema.methods.removeQuantity = async function(){
+  const order = this;
+  for(const item of order.items){
+    const sizeArray = await Product.find({_id:item.product._id}).sizeArray;
+  }
+}
+
 module.exports = mongoose.model('Order',orderSchema);
