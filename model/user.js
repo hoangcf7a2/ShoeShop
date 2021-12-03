@@ -99,6 +99,7 @@ const userSchema = new Schema(
 // so sánh password người dùng nhập vào và password gốc của user
 userSchema.methods.comparePassword = async function(password){
   const user = this;
+  console.log(user)
   const result = await bcryptjs.compare(password,user.password); // true hoặc false
   return result;
 }

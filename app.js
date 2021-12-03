@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const path = require('path')
+const cookies = require('cookie-parser');
 
 
 const adminRoute  = require('./routes/admin')
@@ -59,6 +60,9 @@ app.use(express.static(path.join(__dirname,'assets','images')))
 app.use(compression());
 //set HTTP headers de protect nodeapp
 app.use(helmet());
+
+// để lấy được cookie từ req
+app.use(cookies())
 
 app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Origin','*'); // cho phép tất cả các trang web thứ 3 dùng api của mình 

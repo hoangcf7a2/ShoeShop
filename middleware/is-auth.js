@@ -3,7 +3,8 @@ const User = require('../model/user')
 
 module.exports = async (req,res,next)=>{
     try{
-        const user = await User.findByToken(req.cookie.auth);
+        console.log(req.cookies)
+        const user = await User.findByToken(req.cookies.auth);
         if(!user){
             const error = new Error('Not authenticated');
             error.statusCode = 401;

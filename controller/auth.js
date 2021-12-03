@@ -13,13 +13,14 @@ exports.login = async (req,res,next)=>{
             throw error;
         }
         const isMatch = await user.comparePassword(password);
+        console.log(isMatch)
         // Password nhập bị sai
         if(!isMatch){
             const error = new Error('Wrong password');
             error.statusCode= 401;
             throw error;
         }
-        // sinh ra token và gán vào cho
+        // sinh ra token và gán vào cho cookie
         const token = await user.generateToken();
         // user.password = undefined;
         delete user._doc.password
