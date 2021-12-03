@@ -9,7 +9,12 @@ exports.createOrder = async (req,res,next)=>{
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;
         // Thực hiện xóa quantity của product với size tương ứng
-        // const result = order.removeQuantity();
+        const removeResult = order.removeQuantity();
+        if(!removeResult){
+            const error = new Error('Product is not enough quantity to create this order');
+            error.statusCode = 422;
+            throw error;
+        }
         const result = await order.save();
         // Nếu không có lỗi tiến hành gửi email cho khách hàng thông tin order
         const emailResult = await order.sendMail();

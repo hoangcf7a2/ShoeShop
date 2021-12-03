@@ -1,4 +1,5 @@
 const Product = require('../model/product');
+const Size = require('../model/size');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const listStatus = require('../utils/status')
@@ -121,11 +122,33 @@ orderSchema.methods.sendMail = async function(){
     return false;
   }
 }
-
+// true nếu trừ quantity thành công,false nếu sinh ra lỗi
 orderSchema.methods.removeQuantity = async function(){
-  const order = this;
-  for(const item of order.items){
-    const sizeArray = await Product.find({_id:item.product._id}).sizeArray;
+  try{
+    const order = this;
+    for(const item of order.items){
+      // Tìm ra id của size đã chọn của item tương ứng
+      const sizePickedId = await Size.findOne({sizeNumber:item.size})._id;
+      console.log(sizePickedId);
+      // TÌm product tương ứng với item
+      const product = await Product.find({_id:item.product._id});
+      // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và giảm quantity, nếu quantity không đủ return false
+      product.sizeArray.forEach(function(element,index){
+        if(element.size === sizePickedId && element.quantity>item.quantity){
+          element.quantity-=item.quantity;
+          break;
+        }
+        else if(element.size === sizePickedId && element.quantity<item.quantity){
+          return false;
+        } 
+      })
+      await product.save();
+      // Trả về true nếu tất cả các product đều đủ quantity để tạo đơn hàng
+      return true;
+    }
+  }
+  catch(err){
+    return false;
   }
 }
 
