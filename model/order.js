@@ -6,6 +6,9 @@ const listStatus = require('../utils/status')
 const sendGridMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const path = require('path');
+const mongoDB = require('mongodb');
+const ObjectId = mongoDB.ObjectId;
+
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs =require('fs');
 
@@ -26,6 +29,11 @@ const orderSchema = new Schema(
           required:true,
           // ref:'Product'
         },
+        // product:{
+        //   type:Schema.Types.ObjectId,
+        //   required:true,
+        //   ref:'Product'
+        // },
         quantity: {
           type: Number,
           required: true,
@@ -128,24 +136,25 @@ orderSchema.methods.removeQuantity = async function(){
     const order = this;
     for(const item of order.items){
       // Tìm ra id của size đã chọn của item tương ứng
-      const sizePickedId = await Size.findOne({sizeNumber:item.size})._id;
-      console.log(sizePickedId);
+      const sizePicked = await Size.findOne({sizeNumber:item.size});
       // TÌm product tương ứng với item
-      const product = await Product.find({_id:item.product._id});
+      const product = await Product.findOne({_id:item.product._id});
       // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và giảm quantity, nếu quantity không đủ return false
       product.sizeArray.some(function(element,index){
-        if(element.size === sizePickedId && element.quantity>item.quantity){
+        console.log(element)
+        if(element.size.toString() === sizePicked._id.toString() && element.quantity>item.quantity){
           element.quantity-=item.quantity;
+          // console.log(element)
           return true;
         }
-        else if(element.size === sizePickedId && element.quantity<item.quantity){
+        else if(element.size.toString() === sizePicked._id.toString() && element.quantity<item.quantity){
           throw "product quantity is not enough"
         } 
       })
       await product.save();
-      // Trả về true nếu tất cả các product đều đủ quantity để tạo đơn hàng
-      return true;
     }
+    // Trả về true nếu tất cả các product đều đủ quantity để tạo đơn hàng
+    return true;
   }
   catch(err){
     console.log(err);
