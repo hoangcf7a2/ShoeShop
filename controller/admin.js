@@ -40,7 +40,7 @@ exports.createUser = async (req,res,next)=>{
 
 exports.getUsers =  async (req,res,next)=>{
     try{
-        const users = await User.find();
+        const users = await User.find().select('name email phone');
         res.status(200).json({message:'Fetched Users Successfully',users:users});
     }
     catch(err){
@@ -54,7 +54,7 @@ exports.getUsers =  async (req,res,next)=>{
 exports.getUser = async (req,res,next)=>{
     const userId = req.params.userId;
     try{
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).select('name email phone')
         if(!user){
             const error = new Error('Could not find user');
             error.statusCode = 404;
