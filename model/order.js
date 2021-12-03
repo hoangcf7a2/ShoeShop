@@ -133,13 +133,13 @@ orderSchema.methods.removeQuantity = async function(){
       // TÌm product tương ứng với item
       const product = await Product.find({_id:item.product._id});
       // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và giảm quantity, nếu quantity không đủ return false
-      product.sizeArray.forEach(function(element,index){
+      product.sizeArray.some(function(element,index){
         if(element.size === sizePickedId && element.quantity>item.quantity){
           element.quantity-=item.quantity;
-          break;
+          return true;
         }
         else if(element.size === sizePickedId && element.quantity<item.quantity){
-          return false;
+          throw "product quantity is not enough"
         } 
       })
       await product.save();
@@ -148,6 +148,7 @@ orderSchema.methods.removeQuantity = async function(){
     }
   }
   catch(err){
+    console.log(err);
     return false;
   }
 }
