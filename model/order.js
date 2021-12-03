@@ -35,7 +35,7 @@ const orderSchema = new Schema(
         //   ref:'Product'
         // },
         quantity: {
-          type: Number,
+          type: Number, 
           required: true,
         },
         size:{
