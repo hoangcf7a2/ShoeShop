@@ -24,7 +24,7 @@ exports.login = async (req,res,next)=>{
         const token = await user.generateToken();
         // user.password = undefined;
         delete user._doc.password
-        res.status(200).cookie('auth',token,{domain:'.herokuapp.com:3000',samesite:false}).json({message:'Login sucessfully',user:user});
+        res.status(200).cookie('auth',token,{domain:'.herokuapp.com:3000',samesite:'none'}).json({message:'Login sucessfully',user:user});
     }
     catch(err){
         if(!err.statusCode){
