@@ -65,7 +65,7 @@ app.use(helmet());
 app.use(cookies())
 
 app.use((req,res,next)=>{
-    res.setHeader('Access-Control-Allow-Origin','htpps://shoe-shop-client.herokuapp.com:3000'); // cho phép tất cả các trang web thứ 3 dùng api của mình 
+    res.setHeader('Access-Control-Allow-Origin','https://shoe-shop-client.herokuapp.com:3000'); // cho phép tất cả các trang web thứ 3 dùng api của mình 
     res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE'); // cho phép gọi đến các phương thức
     res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization'); // cho phép gửi request kèm với header 
     res.header('Access-Control-Allow-Credentials', true); // cho phép thông tin xác thực được gửi qua cookie, đó là cookie, authorization header,chứng chỉ TLS ở máy khách(TLS Client Certificates)
