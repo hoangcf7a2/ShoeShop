@@ -32,7 +32,7 @@ router.delete('/user/:userId',isAuth,adminController.deleteUser);
 router.put('/user/:userId',isAuth,adminController.updateUser);
 
 //Size
-router.post('/size',isAuth,dminController.createSize);
+router.post('/size',isAuth,adminController.createSize);
 router.get('/sizes',isAuth,adminController.getSizes);
 router.get('/size/:sizeId',isAuth,adminController.getSize);
 router.delete('/size/:sizeId',isAuth,adminController.deleteSize);
