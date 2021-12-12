@@ -24,6 +24,8 @@ exports.login = async (req,res,next)=>{
         const token = await user.generateToken();
         // user.password = undefined;
         delete user._doc.password
+        // set samesite để thằng từ web thứ 3 có thể dùng cookie của mình set cho nó qua response với mọi request,lax là với get , strict là k cho với gì lun
+        // set samesite = none, thì phải set secure = true , secure = true nghĩa là chỉ cho sài cookie này cho web thứ 3 là https, http ko cho
         res.status(200).cookie('auth',token,{sameSite: 'none',secure: true}).json({message:'Login sucessfully',user:user});
     }
     catch(err){

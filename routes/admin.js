@@ -25,7 +25,7 @@ const isAuth = require('../middleware/is-auth');
  *         '500':
  *          description: Error
  */
-router.post('/user',isAuth,adminController.createUser);
+router.post('/user',adminController.createUser);
 router.get('/users',isAuth,adminController.getUsers);
 router.get('/user/:userId',isAuth,adminController.getUser);
 router.delete('/user/:userId',isAuth,adminController.deleteUser);
@@ -70,4 +70,7 @@ router.delete('/product/:productId',isAuth,adminController.deleteProduct);
 router.put('/order/:orderId',isAuth,adminController.updateOrder);
 router.get('/orders',isAuth,adminController.getOrders);
 router.get('/order/:orderId',isAuth,adminController.getOrder);
+
+//Chart
+router.get('/chart')
 module.exports = router;
