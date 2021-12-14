@@ -65,10 +65,12 @@ app.use(helmet());
 app.use(cookies())
 
 app.use((req,res,next)=>{
-
-    res.setHeader('Access-Control-Allow-Origin',process.env.ALLOW_HOST_ORIGIN.split(','));// cho phép tất cả các trang web thứ 3 dùng api của mình , * cho phép tất cả gọi vào, nhưng sẽ k nhận được credential vd như cookie
+if (process.env.ALLOW_HOST_ORIGIN.split(',').indexOf(req.headers.origin) !== -1) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+}
+    // res.setHeader('Access-Control-Allow-Origin',process.env.ALLOW_HOST_ORIGIN.split(','));// cho phép tất cả các trang web thứ 3 dùng api của mình , * cho phép tất cả gọi vào, nhưng sẽ k nhận được credential vd như cookie
     res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE'); // cho phép gọi đến các phương thức
-    res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization'); // cho phép gửi request kèm với header 
+    res.setHeader('Access-Control-Allow-Headers','Origin,Content-Type,Authorization'); // cho phép gửi request kèm với header 
     res.header('Access-Control-Allow-Credentials', true); // cho phép thông tin xác thực được gửi qua cookie, đó là cookie, authorization header,chứng chỉ TLS ở máy khách(TLS Client Certificates)
     next();
 })
