@@ -850,3 +850,39 @@ exports.getOrder = async (req,res,next)=>{
         next(err);
     }
 }
+// Chart
+exports.Chart = async (req,res,next)=>{
+    try{
+        const orders = await Order.find();
+        const orderPerMonthchart = await Order.createOrderPerMonthChart(orders);
+        orderChart = Array.from(orderPerMonthchart, ([month, orderNumber]) => ({ month, orderNumber }));
+        console.log(orderChart)
+        const RevenuePerMonthchart = await Order.createRevenuePerMonthChart(orders);
+        revenueChart = Array.from(RevenuePerMonthchart, ([month, revenue]) => ({ month, revenue }));
+        // const top10Spent = await Order.createTop10SpentChart(orders);
+        res.status(200).json({message:'Create order Per Month chart successfully',orderChart:orderChart,revenueChart:revenueChart})
+    }
+    catch(err){
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
+// // Tổng doanh thu trên từng tháng
+// exports.OrderPerMonthChart = async (req,res,next)=>{
+//     try{
+//         const orders = await Order.find();
+//         const orderPerMonthchart = await Order.createOrderPerMonthChart(orders);
+//         console.log(orderPerMonthchart)
+//         chart = Array.from(orderPerMonthchart, ([month, orderNumber]) => ({ month, orderNumber }));
+//         res.status(200).json({message:'Create order Per Month chart successfully',chart:chart})
+//     }
+//     catch(err){
+//         if(!err.statusCode){
+//             err.statusCode = 500;
+//         }
+//         next(err);
+//     }
+// }

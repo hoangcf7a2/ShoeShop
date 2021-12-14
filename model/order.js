@@ -189,5 +189,64 @@ orderSchema.methods.addQuantity = async function(){
     return false;
   }
 }
+function OrderGroupByMonth(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+      const key = keyGetter(item);
+      if (!map.has(key)) {
+          map.set(key, 1);
+      } else {
+        const count = map.get(key)
+          map.set(key,count+1)
+      }
+  });
+  return map;
+}
+function RevenueGroupByMonth(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+      const key = keyGetter(item);
+      if (!map.has(key)) {
+          map.set(key, item.orderMoney);
+      } else {
+        const oldRevenue = parseFloat(map.get(key));
+        var newRevenue = oldRevenue + parseFloat(item.orderMoney)
+          map.set(key,newRevenue.toString());
+      }
+  });
+  return map;
+}
+function SpentGroupByPhone(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+      const key = keyGetter(item);
+      if (!map.has(key)) {
+          map.set(key, item.orderMoney);
+      } else {
+        const oldSpent = parseFloat(map.get(key));
+        var newSpent = oldSpent + parseFloat(item.orderMoney)
+          map.set(key,newSpent.toString());
+      }
+  });
+  return map;
+}
+orderSchema.statics.createOrderPerMonthChart = async function(orders){
+  const orderPerMonth = OrderGroupByMonth(orders,order =>order.orderDate.slice(3,5));
+  console.log(orderPerMonth)
+  return orderPerMonth;
+}
+
+orderSchema.statics.createRevenuePerMonthChart = async function(orders){
+  const revenuePerMonth = RevenueGroupByMonth(orders,order => order.orderDate.slice(3,5));
+  return revenuePerMonth;
+}
+// orderSchema.statics.createTop10SpentChart = async function(orders){
+//   const spents = SpentGroupByPhone(orders,order => order.phone);
+//   var top10Spents = new Map();
+//   var spentsArray = Array.from(spents, ([phone, spent]) => ({ phone, spent }));
+//   const topWanted = 10;
+//     console.log(Math.max.apply(this,spentsArray.map(object=>(object.spent))))
+//   return spents;
+// }
 
 module.exports = mongoose.model('Order',orderSchema);

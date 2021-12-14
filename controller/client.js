@@ -6,7 +6,7 @@ exports.createOrder = async (req,res,next)=>{
     var order;
     var removeResult=false;
     try{
-        order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString()});
+        order = new Order({name:name,items:items,address,phone,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString("en-GB",{year:"numeric",month:"2-digit", day:"2-digit"})}); // ngày ở dạng days - month - year , year có 4 số , month 2 số , day có 2 số 
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;
