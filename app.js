@@ -66,6 +66,7 @@ app.use(cookies())
 
 app.use((req,res,next)=>{
   process.env.ALLOW_HOST_ORIGIN.split(',').forEach(host => {
+    console.log(host)
       res.setHeader('Access-Control-Allow-Origin',host);
     });// cho phép tất cả các trang web thứ 3 dùng api của mình , * cho phép tất cả gọi vào, nhưng sẽ k nhận được credential vd như cookie
     res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE'); // cho phép gọi đến các phương thức
