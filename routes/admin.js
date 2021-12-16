@@ -72,5 +72,5 @@ router.get('/orders',isAuth,adminController.getOrders);
 router.get('/order/:orderId',isAuth,adminController.getOrder);
 
 //Chart
-router.get('/chart',adminController.Chart)
+router.get('/chart',isAuth,adminController.Chart)
 module.exports = router;
