@@ -83,6 +83,15 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 );
-
+productSchema.statics.getMostRecent5Products = async function(){
+  const mostRecent5Products = await this.find().sort({createdAt:-1}).limit(5);
+  const mostRecent5ProductsMapped = await mostRecent5Products.map(product=>({
+    title:product.title,
+    image01:product.image01,
+    price:product.price,
+    createdAt:product.createdAt.toISOString().slice(0,10).split("-").reverse().join("/")
+  }))
+  return mostRecent5ProductsMapped;
+}
 module.exports = mongoose.model('Product',productSchema);
 

@@ -189,32 +189,48 @@ orderSchema.methods.addQuantity = async function(){
     return false;
   }
 }
-function OrderGroupByMonth(list, keyGetter) {
+function createMonthNotAvailable(map){
+  const month = ['01','02','03','04','05','06','07','08','09','10','11','12']
+  for(var item of month){
+    if(!map.has(item)){
+      map.set(item,0);
+    }
+  }
+  return new Map([...map].sort((a,b)=>{
+    return a[0]-b[0]
+  }));
+}
+function OrderGroupByMonth(list, getMonth,getYear) {
   const map = new Map();
   list.forEach((item) => {
-      const key = keyGetter(item);
-      if (!map.has(key)) {
+      const key = getMonth(item);
+      const year = getYear(item);
+      if (!map.has(key) && year=== new Date().getFullYear().toString()) {
           map.set(key, 1);
-      } else {
-        const count = map.get(key)
-          map.set(key,count+1)
+      } else if(map.has(key) && year=== new Date().getFullYear().toString()){
+        const count = map.get(key);
+        map.set(key,count+1);
       }
   });
-  return map;
+  
+  return createMonthNotAvailable(map);
 }
-function RevenueGroupByMonth(list, keyGetter) {
+function RevenueGroupByMonth(list,getMonth,getYear) {
   const map = new Map();
   list.forEach((item) => {
-      const key = keyGetter(item);
-      if (!map.has(key)) {
+      const key = getMonth(item);
+      const year = getYear(item)
+      if (!map.has(key) && year=== new Date().getFullYear().toString()) {
           map.set(key, item.orderMoney);
-      } else {
+      } 
+      else if(map.has(key) && year=== new Date().getFullYear().toString())
+      {
         const oldRevenue = parseFloat(map.get(key));
         var newRevenue = oldRevenue + parseFloat(item.orderMoney)
           map.set(key,newRevenue.toString());
       }
   });
-  return map;
+  return createMonthNotAvailable(map);
 }
 function SpentGroupByPhone(list, keyGetter) {
   const map = new Map();
@@ -228,25 +244,48 @@ function SpentGroupByPhone(list, keyGetter) {
           map.set(key,newSpent.toString());
       }
   });
+  console.log(map)
   return map;
 }
 orderSchema.statics.createOrderPerMonthChart = async function(orders){
-  const orderPerMonth = OrderGroupByMonth(orders,order =>order.orderDate.slice(3,5));
-  console.log(orderPerMonth)
+  const orderPerMonth = OrderGroupByMonth(orders,order =>order.orderDate.slice(3,5),order=>order.orderDate.slice(6,10));
   return orderPerMonth;
 }
 
 orderSchema.statics.createRevenuePerMonthChart = async function(orders){
-  const revenuePerMonth = RevenueGroupByMonth(orders,order => order.orderDate.slice(3,5));
+  const revenuePerMonth = RevenueGroupByMonth(orders,order => order.orderDate.slice(3,5),order=>order.orderDate.slice(6,10));
   return revenuePerMonth;
 }
-// orderSchema.statics.createTop10SpentChart = async function(orders){
-//   const spents = SpentGroupByPhone(orders,order => order.phone);
-//   var top10Spents = new Map();
-//   var spentsArray = Array.from(spents, ([phone, spent]) => ({ phone, spent }));
-//   const topWanted = 10;
-//     console.log(Math.max.apply(this,spentsArray.map(object=>(object.spent))))
-//   return spents;
-// }
+orderSchema.statics.getMostSpent5Phone = async function(orders){
+  const spentPhone = SpentGroupByPhone(orders,order => order.phone);
+  const mostSpent5PhoneMap=new Map([...spentPhone].sort((a,b)=>{
+    return b[1]-a[1];
+  }));
+  const mostSpent5PhoneArray = Array.from(mostSpent5PhoneMap,([phone,spent])=>({phone,spent}));
+  return mostSpent5PhoneArray;
+}
+
+function changeFormatOfTimeToYearMonthDay(str){
+  var formatStr = str.slice(6,10)+'/'+str.slice(3,5)+'/'+str.slice(0,2)
+  return formatStr;
+}
+
+orderSchema.statics.getMostRecent5Orders = async function(orders){
+  // const mostRecent5Orders = await this.find().sort({orderDate:-1}).limit(5).select('orderDate');
+  const mostRecent5Orders=orders.sort((a,b)=>{
+    var aFormat = new Date(changeFormatOfTimeToYearMonthDay(a.orderDate));
+    var bFormat = new Date(changeFormatOfTimeToYearMonthDay(b.orderDate));
+    return bFormat - aFormat
+  }).slice(0,5).map(order=>({
+    name:order.name,
+    phone:order.phone,
+    status:order.status,
+    orderCode:order.orderCode,
+    orderDate:order.orderDate,
+    totalMoney:order.totalMoney
+  }));
+  return mostRecent5Orders;
+}
+
 
 module.exports = mongoose.model('Order',orderSchema);

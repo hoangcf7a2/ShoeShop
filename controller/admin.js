@@ -854,13 +854,22 @@ exports.getOrder = async (req,res,next)=>{
 exports.Chart = async (req,res,next)=>{
     try{
         const orders = await Order.find();
+        const numOfOrders = await Order.countDocuments({});
+        const numOfProducts = await Product.countDocuments({});
+        const numOfUsers = await User.countDocuments({});
         const orderPerMonthchart = await Order.createOrderPerMonthChart(orders);
-        orderChart = Array.from(orderPerMonthchart, ([month, orderNumber]) => ({ month, orderNumber }));
-        console.log(orderChart)
+        // tham số 1 là map , tham số thứ 2 la map function, ta có mỗi phần tử của thằng map là 1 mảng [key,value] , vì vậy map là mảng 2 chiều
+        // vì truyền array vào nên ta phải dùng dấu ()
+        // ta muốn return nhanh thì ta cũng dùng dấu ()
+        const orderChart = Array.from(orderPerMonthchart, ([month, orderNumber]) => ({ month, orderNumber }));
         const RevenuePerMonthchart = await Order.createRevenuePerMonthChart(orders);
-        revenueChart = Array.from(RevenuePerMonthchart, ([month, revenue]) => ({ month, revenue }));
+        const revenueChart = Array.from(RevenuePerMonthchart, ([month, revenue]) => ({ month, revenue }));
+        const mostSpentChart = await Order.getMostSpent5Phone(orders)
         // const top10Spent = await Order.createTop10SpentChart(orders);
-        res.status(200).json({message:'Create order Per Month chart successfully',orderChart:orderChart,revenueChart:revenueChart})
+        const mostRecent5Orders = await Order.getMostRecent5Orders(orders);
+        const mostRecent5Products = await Product.getMostRecent5Products();
+        const mostRecent5Users = await User.getMostRecent5Users();
+        res.status(200).json({message:'Create order Per Month chart successfully',numOfOrders:numOfOrders,numofProducts:numOfProducts,numOfUsers:numOfUsers,orderChart:orderChart,revenueChart:revenueChart,mostSpentChart:mostSpentChart,mostRecent5Orders:mostRecent5Orders,mostRecent5Products:mostRecent5Products,mostRecent5Users:mostRecent5Users})
     }
     catch(err){
         if(!err.statusCode){
@@ -870,19 +879,3 @@ exports.Chart = async (req,res,next)=>{
     }
 }
 
-// // Tổng doanh thu trên từng tháng
-// exports.OrderPerMonthChart = async (req,res,next)=>{
-//     try{
-//         const orders = await Order.find();
-//         const orderPerMonthchart = await Order.createOrderPerMonthChart(orders);
-//         console.log(orderPerMonthchart)
-//         chart = Array.from(orderPerMonthchart, ([month, orderNumber]) => ({ month, orderNumber }));
-//         res.status(200).json({message:'Create order Per Month chart successfully',chart:chart})
-//     }
-//     catch(err){
-//         if(!err.statusCode){
-//             err.statusCode = 500;
-//         }
-//         next(err);
-//     }
-// }

@@ -23,3 +23,11 @@ const grouped = groupBy(pets,
 pet => JSON.stringify({ type: pet.type, age: pet.age }));
 
 console.log(grouped.get('{"type":"Dog","age":3}'));
+
+
+var as2D = [ 
+    ["a","b","c","d","e","f","g","h","i","j"], 
+    ["A","B","C","D","E","F","G","H","I","J"], 
+    ["!","@","#","$","%","^","&","*","(",")"] 
+    ];
+console.log(as2D)

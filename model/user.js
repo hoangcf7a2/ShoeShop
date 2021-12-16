@@ -135,5 +135,14 @@ userSchema.methods.deleteToken = async function () {
 	return result;
 };
 
-
+userSchema.statics.getMostRecent5Users = async function(){
+  const mostRecent5Users = await this.find().sort({createdAt:-1}).limit(5);
+  const mostRecent5UsersMapped = await mostRecent5Users.map(user=>({
+    name:user.name,
+    email:user.email,
+    phone:user.phone,
+    createdAt:user.createdAt.toISOString().slice(0,10).split("-").reverse().join("/")
+  }))
+  return mostRecent5UsersMapped;
+}
 module.exports = mongoose.model('User',userSchema);
