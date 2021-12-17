@@ -86,6 +86,7 @@ const productSchema = new Schema(
 productSchema.statics.getMostRecent5Products = async function(){
   const mostRecent5Products = await this.find().sort({createdAt:-1}).limit(5);
   const mostRecent5ProductsMapped = await mostRecent5Products.map(product=>({
+    _id:product._id,
     title:product.title,
     image01:product.image01,
     price:product.price,

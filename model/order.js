@@ -277,6 +277,7 @@ orderSchema.statics.getMostRecent5Orders = async function(orders){
     var bFormat = new Date(changeFormatOfTimeToYearMonthDay(b.orderDate));
     return bFormat - aFormat
   }).slice(0,5).map(order=>({
+    _id:order._id,
     name:order.name,
     phone:order.phone,
     status:order.status,

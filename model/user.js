@@ -138,6 +138,7 @@ userSchema.methods.deleteToken = async function () {
 userSchema.statics.getMostRecent5Users = async function(){
   const mostRecent5Users = await this.find().sort({createdAt:-1}).limit(5);
   const mostRecent5UsersMapped = await mostRecent5Users.map(user=>({
+    _id:user._id,
     name:user.name,
     email:user.email,
     phone:user.phone,
