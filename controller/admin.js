@@ -866,10 +866,10 @@ exports.Chart = async (req,res,next)=>{
         const revenueChart = Array.from(RevenuePerMonthchart, ([month, revenue]) => ({ month, revenue }));
         const mostSpentChart = await Order.getMostSpent5Phone(orders)
         // const top10Spent = await Order.createTop10SpentChart(orders);
-        const mostRecent5Orders = await Order.getMostRecent5Orders(orders);
+        const mostRecent10Orders = await Order.getMostRecent10Orders(orders);
         const mostRecent5Products = await Product.getMostRecent5Products();
         const mostRecent5Users = await User.getMostRecent5Users();
-        res.status(200).json({message:'Create order Per Month chart successfully',numOfOrders:numOfOrders,numofProducts:numOfProducts,numOfUsers:numOfUsers,orderChart:orderChart,revenueChart:revenueChart,mostSpentChart:mostSpentChart,mostRecent5Orders:mostRecent5Orders,mostRecent5Products:mostRecent5Products,mostRecent5Users:mostRecent5Users})
+        res.status(200).json({message:'Create order Per Month chart successfully',numOfOrders:numOfOrders,numofProducts:numOfProducts,numOfUsers:numOfUsers,orderChart:orderChart,revenueChart:revenueChart,mostSpentChart:mostSpentChart,mostRecent10Orders:mostRecent10Orders,mostRecent5Products:mostRecent5Products,mostRecent5Users:mostRecent5Users})
     }
     catch(err){
         if(!err.statusCode){

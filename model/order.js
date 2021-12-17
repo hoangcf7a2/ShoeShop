@@ -270,13 +270,13 @@ function changeFormatOfTimeToYearMonthDay(str){
   return formatStr;
 }
 
-orderSchema.statics.getMostRecent5Orders = async function(orders){
+orderSchema.statics.getMostRecent10Orders = async function(orders){
   // const mostRecent5Orders = await this.find().sort({orderDate:-1}).limit(5).select('orderDate');
-  const mostRecent5Orders=orders.sort((a,b)=>{
+  const mostRecent10Orders=orders.sort((a,b)=>{
     var aFormat = new Date(changeFormatOfTimeToYearMonthDay(a.orderDate));
     var bFormat = new Date(changeFormatOfTimeToYearMonthDay(b.orderDate));
     return bFormat - aFormat
-  }).slice(0,5).map(order=>({
+  }).slice(0,10).map(order=>({
     _id:order._id,
     name:order.name,
     phone:order.phone,
@@ -285,7 +285,7 @@ orderSchema.statics.getMostRecent5Orders = async function(orders){
     orderDate:order.orderDate,
     totalMoney:order.totalMoney
   }));
-  return mostRecent5Orders;
+  return mostRecent10Orders;
 }
 
 
