@@ -1,19 +1,21 @@
 const Order = require('../model/order');
 const shortId = require('shortid');
+const listStatus = require('../utils/status')
 //---------------------------------------- Order Controller ----------------------------------------------------------------------------------//
 exports.createOrder = async (req,res,next)=>{
     const {name,items,address,phone,email,status} = req.body
     var order;
     var removeResult=false;
     try{
+        if(status != status)
         order = new Order({name:name,items:items,address,phone,status:status,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString("en-GB",{year:"numeric",month:"2-digit", day:"2-digit"})}); // ngày ở dạng days - month - year , year có 4 số , month 2 số , day có 2 số 
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;
         // Thực hiện xóa quantity của product với size tương ứng
         removeResult = await order.removeQuantity(); // true hoặc false
-        if(!removeResult){
-            const error = new Error('Product is not enough quantity to create this order');
+        if(removeResult!==true){
+            const error = new Error(removeResult);
             error.statusCode = 422;
             throw error;
         }
