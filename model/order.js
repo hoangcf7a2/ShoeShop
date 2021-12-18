@@ -157,7 +157,7 @@ orderSchema.methods.removeQuantity = async function(){
   }
   catch(err){
     console.log(err);
-    return err.message;
+    return err;
   }
 }
 // dùng để add lại quantity khi có lỗi không add được order 
