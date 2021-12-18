@@ -7,6 +7,6 @@
         "SECRET_KEY":"shoeShop@123",
         "SENDGRID_API_KEY":"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",
         "DOMAIN_WILDCARD":".herokuapp.com",
-        "ALLOW_HOST_ORIGIN":"https://herokuapp.com:3000,https://jisoo-store-shoe.herokuapp.com"
+        "ALLOW_HOST_ORIGIN":"http://herokuapp.com:3000,https://jisoo-store-shoe.herokuapp.com"
     }
 }
