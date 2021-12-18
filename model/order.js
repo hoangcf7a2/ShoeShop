@@ -141,7 +141,7 @@ orderSchema.methods.removeQuantity = async function(){
       // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và giảm quantity, nếu quantity không đủ return false
       product.sizeArray.some(function(element,index){
         console.log(element)
-        if(element.size.toString() === sizePicked._id.toString() && element.quantity>item.quantity){
+        if(element.size.toString() === sizePicked._id.toString() && element.quantity>=item.quantity){
           element.quantity-=item.quantity;
           // console.log(element)
           return true;
