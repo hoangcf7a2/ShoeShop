@@ -147,7 +147,7 @@ orderSchema.methods.removeQuantity = async function(){
           return true;
         }
         else if(element.size.toString() === sizePicked._id.toString() && element.quantity<item.quantity){
-          throw `${product.title} - Size ${item.size} chỉ còn lại ${quantity} sản phẩn,vui lòng giảm số lượng để đặt đơn hàng thành công`
+          throw `${product.title} - Size ${item.size} chỉ còn lại ${element.quantity} sản phẩn,vui lòng giảm số lượng để đặt đơn hàng thành công`
         } 
       })
       await product.save();
