@@ -7,6 +7,7 @@ exports.createOrder = async (req,res,next)=>{
     var order;
     var removeResult=false;
     try{
+        console.log(status,listStatus.pending)
         if(status !== listStatus.pending || status !== listStatus.shipping){
             const error = new Error('Status selected is invalid');
             error.statusCode = 422;
