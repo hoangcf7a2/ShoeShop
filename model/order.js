@@ -53,8 +53,7 @@ const orderSchema = new Schema(
       required: true,
     },
     status: {
-      type: String,
-      default:listStatus.pending
+      type: String
     },
     // discountMoney: {
     //   type: mongoose.Decimal128,
