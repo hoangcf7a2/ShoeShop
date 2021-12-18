@@ -7,8 +7,13 @@ exports.createOrder = async (req,res,next)=>{
     var order;
     var removeResult=false;
     try{
-        if(status != status)
+        if(status !== listStatus.pending || status !== listStatus.shipping){
+            const error = new Error('Status selected is invalid');
+            error.statusCode = 422;
+            throw error;
+        }
         order = new Order({name:name,items:items,address,phone,status:status,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString("en-GB",{year:"numeric",month:"2-digit", day:"2-digit"})}); // ngày ở dạng days - month - year , year có 4 số , month 2 số , day có 2 số 
+        console.log(order)
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;

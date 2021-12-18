@@ -771,7 +771,7 @@ exports.updateOrder = async (req,res,next)=>{
         }
         if(invalidStatusCount === statusCount){
             const error = new Error('Status selected is invalid');
-            error.statusCode = 402;
+            error.statusCode = 422;
             throw error;
         }
         // Xet su hop le cua status truoc sau
@@ -800,7 +800,7 @@ exports.updateOrder = async (req,res,next)=>{
         }
         if(errorFlag){
             const error = new Error('Status selected is invalid');
-            error.statusCode = 402;
+            error.statusCode = 422;
             throw error;
         }
         if(status === listStatus.failed){
