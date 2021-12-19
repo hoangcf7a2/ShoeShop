@@ -33,14 +33,14 @@ router.put('/user/:userId',isAuth,adminController.updateUser);
 
 //Size
 router.post('/size',isAuth,adminController.createSize);
-router.get('/sizes',isAuth,adminController.getSizes);
+router.get('/sizes',adminController.getSizes);
 router.get('/size/:sizeId',isAuth,adminController.getSize);
 router.delete('/size/:sizeId',isAuth,adminController.deleteSize);
 router.put('/size/:sizeId',isAuth,adminController.updateSize);
 
 //Color
 router.post('/color',isAuth,adminController.createColor);
-router.get('/colors',isAuth,adminController.getColors);
+router.get('/colors',adminController.getColors);
 router.get('/color/:colorId',isAuth,adminController.getColor);
 router.put('/color/:colorId',isAuth,adminController.updateColor);
 router.delete('/color/:colorId',isAuth,adminController.deleteColor);
@@ -54,7 +54,7 @@ router.delete('/brand/:brandId',isAuth,adminController.deleteBrand);
 
 // Category
 router.post('/category',isAuth,adminController.createCategory);
-router.get('/categories',isAuth,adminController.getCategories);
+router.get('/categories',adminController.getCategories);
 router.get('/category/:categoryId',isAuth,adminController.getCategory);
 router.put('/category/:categoryId',isAuth,adminController.updateCategory);
 router.delete('/category/:categoryId',isAuth,adminController.deleteCategory);
