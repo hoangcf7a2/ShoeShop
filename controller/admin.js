@@ -174,6 +174,12 @@ exports.deleteSize  = async (req,res,next)=>{
             error.statusCode = 404;
             throw error;
         }
+        const result = await Product.hasSize(sizeId);
+        if(result){
+            const error = new Error('Conflict with Product collection, cant delete size');
+            error.statusCode = 409;
+            throw error;
+        }
         await Size.findByIdAndRemove(sizeId);
         res.status(200).json({message:'Delete Size Successfully'});
     }
@@ -288,6 +294,12 @@ exports.deleteColor  = async (req,res,next)=>{
         if(!color){
             const error = new Error('Could not find color');
             error.statusCode = 404;
+            throw error;
+        }
+        const result = await Product.hasColor(colorId);
+        if(result){
+            const error = new Error('Conflict with Product collection, cant delete color');
+            error.statusCode = 409;
             throw error;
         }
         await Color.findByIdAndRemove(colorId);
@@ -481,6 +493,12 @@ exports.deleteCategory  = async (req,res,next)=>{
         if(!category){
             const error = new Error('Could not find category');
             error.statusCode = 404;
+            throw error;
+        }
+        const result = await Product.hasCategory(categoryId);
+        if(result){
+            const error = new Error('Conflict with Product collection, cant delete category');
+            error.statusCode = 409;
             throw error;
         }
         await Category.findByIdAndRemove(categoryId);

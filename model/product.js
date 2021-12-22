@@ -94,5 +94,50 @@ productSchema.statics.getMostRecent5Products = async function(){
   }))
   return mostRecent5ProductsMapped;
 }
+productSchema.statics.hasCategory = async function(categoryId){
+  const products = await this.find();
+  const result = products.some(function(element,index){
+    const hasCategory = element.category.some((element)=>{
+      if(element.toString() === categoryId.toString())
+      {
+        return true;
+      }
+    })
+    if(hasCategory===true){
+      return true;
+    }
+  })
+  return result;
+}
+productSchema.statics.hasColor = async function(colorId){
+  const products = await this.find();
+  const result = products.some(function(element,index){
+    const hasColor = element.color.some((element)=>{
+      if(element.toString() === colorId.toString())
+      {
+        return true;
+      }
+    })
+    if(hasColor===true){
+      return true;
+    }
+  })
+  return result;
+}
+productSchema.statics.hasSize = async function(sizeId){
+  const products = await this.find();
+  const result = products.some(function(element,index){
+    const hasSize = element.sizeArray.some((element)=>{
+      if(element.size.toString() === sizeId.toString())
+      {
+        return true;
+      }
+    })
+    if(hasSize===true){
+      return true;
+    }
+  })
+  return result;
+}
 module.exports = mongoose.model('Product',productSchema);
 
