@@ -18,7 +18,7 @@ const method={
     create:'create',
     update:'update'
 }
-
+//testttttt/
 //---------------------------------------- User Controller ----------------------------------------------------------------------------------//
 exports.createUser = async (req,res,next)=>{
     const {name,email,phone,password} = req.body;
