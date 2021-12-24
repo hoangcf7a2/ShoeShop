@@ -873,7 +873,7 @@ exports.Chart = async (req,res,next)=>{
     try{
         const orders = await Order.find();
         const numOfOrders = await Order.countDocuments({});
-        const numOfProducts = await Product.countDocuments({});
+        const numOfProducts = await Product.countDocuments({isRemoved:false});
         const numOfUsers = await User.countDocuments({});
         const orderPerMonthchart = await Order.createOrderPerMonthChart(orders);
         // tham số 1 là map , tham số thứ 2 la map function, ta có mỗi phần tử của thằng map là 1 mảng [key,value] , vì vậy map là mảng 2 chiều
