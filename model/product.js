@@ -95,7 +95,7 @@ productSchema.statics.getMostRecent5Products = async function(){
   return mostRecent5ProductsMapped;
 }
 productSchema.statics.hasCategory = async function(categoryId){
-  const products = await this.find();
+  const products = await this.find({isRemoved:false});
   const result = products.some(function(element,index){
     const hasCategory = element.category.some((element)=>{
       if(element.toString() === categoryId.toString())
@@ -110,7 +110,7 @@ productSchema.statics.hasCategory = async function(categoryId){
   return result;
 }
 productSchema.statics.hasColor = async function(colorId){
-  const products = await this.find();
+  const products = await this.find({isRemoved:false});
   const result = products.some(function(element,index){
     const hasColor = element.color.some((element)=>{
       if(element.toString() === colorId.toString())
@@ -125,7 +125,7 @@ productSchema.statics.hasColor = async function(colorId){
   return result;
 }
 productSchema.statics.hasSize = async function(sizeId){
-  const products = await this.find();
+  const products = await this.find({isRemoved:false});
   const result = products.some(function(element,index){
     const hasSize = element.sizeArray.some((element)=>{
       if(element.size.toString() === sizeId.toString())
