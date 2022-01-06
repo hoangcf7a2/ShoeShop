@@ -11,7 +11,6 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('path')
 const cookies = require('cookie-parser');
 
-//test
 const adminRoute  = require('./routes/admin')
 const authRoute  = require('./routes/auth')
 const clientRoute  = require('./routes/client')
@@ -118,7 +117,7 @@ mongoose.connect(MONGODB_URI)
 .then(result=>{
     console.log('Connected Database');
     console.log('Your process id is:' + process.pid);
-    app.listen(process.env.PORT || 8080);
+    app.listen(process.env.PORT || 6000);
 })
 .catch(err=>{
     console.log(err);

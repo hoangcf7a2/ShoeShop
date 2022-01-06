@@ -202,14 +202,20 @@ function createMonthNotAvailable(map){
 function OrderGroupByMonth(list, getMonth,getYear) {
   const map = new Map();
   list.forEach((item) => {
-      const key = getMonth(item);
-      const year = getYear(item);
-      if (!map.has(key) && year=== new Date().getFullYear().toString()) {
-          map.set(key, 1);
-      } else if(map.has(key) && year=== new Date().getFullYear().toString()){
-        const count = map.get(key);
-        map.set(key,count+1);
-      }
+    // const timeOrder = new Date(changeFormatOfTimeToMonthDayYear(item.orderDate));
+    // const timeNow = new Date();
+    // const differTime = (timeNow.getTime()-timeOrder.getTime())/(1000*3600*24)
+    const key = getMonth(item);
+    const year = getYear(item);
+    if (!map.has(key) && year=== new Date().getFullYear().toString())
+    {
+        map.set(key, 1);
+    } 
+    else if(map.has(key) && year=== new Date().getFullYear().toString())
+    { 
+      const count = map.get(key);
+      map.set(key,count+1);
+    }
   });
   
   return createMonthNotAvailable(map);
@@ -266,6 +272,10 @@ orderSchema.statics.getMostSpent5Phone = async function(orders){
 
 function changeFormatOfTimeToYearMonthDay(str){
   var formatStr = str.slice(6,10)+'/'+str.slice(3,5)+'/'+str.slice(0,2)
+  return formatStr;
+}
+function changeFormatOfTimeToMonthDayYear(str){
+  var formatStr = str.slice(3,5)+'/'+str.slice(0,2)+'/'+str.slice(6,10);
   return formatStr;
 }
 
