@@ -39,6 +39,7 @@ exports.createOrder = async (req,res,next)=>{
         // Nếu đã remove quantity nhưng lại bị lỗi lưu order thì phải cộng lại quantity
         if(removeResult === true){
             const result = await order.addQuantity();
+            console.log(result);
         }
         console.log(err);
         next(err);

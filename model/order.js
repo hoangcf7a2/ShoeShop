@@ -172,11 +172,14 @@ orderSchema.methods.addQuantity = async function(){
       // Quét qua sizeArray của product, tìm ra size trùng với size đã chọn và tăng quantity lại
       product.sizeArray.some(function(element,index){
         console.log(element)
-        if(element.size.toString() === sizePicked._id.toString() && element.quantity>item.quantity){
+        if(element.size.toString() === sizePicked._id.toString() && element.quantity>=item.quantity){
           element.quantity+=item.quantity;
           // console.log(element)
           return true;
         }
+        else if(element.size.toString() === sizePicked._id.toString() && element.quantity<item.quantity){
+          throw `Quantity isnt enough in here, stop add quantity`
+        } 
       })
       await product.save();
     }
@@ -185,7 +188,7 @@ orderSchema.methods.addQuantity = async function(){
   }
   catch(err){
     console.log(err);
-    return false;
+    return err;
   }
 }
 function createMonthNotAvailable(map){
