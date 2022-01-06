@@ -117,7 +117,7 @@ mongoose.connect(MONGODB_URI)
 .then(result=>{
     console.log('Connected Database');
     console.log('Your process id is:' + process.pid);
-    app.listen(process.env.PORT || 6000);
+    app.listen(process.env.PORT || 6060);
 })
 .catch(err=>{
     console.log(err);
