@@ -5,7 +5,7 @@ const listStatus = require('../utils/status')
 exports.createOrder = async (req,res,next)=>{
     const {name,items,address,phone,email,status} = req.body
     var order;
-    var removeResult=false;
+    var removeResult=false; // bằng false , true hoặc 1 error
     try{
         console.log(status,listStatus.pending)
         if(status !== listStatus.pending && status !== listStatus.shipping){
@@ -13,13 +13,13 @@ exports.createOrder = async (req,res,next)=>{
             error.statusCode = 422;
             throw error;
         }
-        order = new Order({name:name,items:items,address,phone,status:status,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString("en-GB",{year:"numeric",month:"2-digit", day:"2-digit"})}); // ngày ở dạng days - month - year , year có 4 số , month 2 số , day có 2 số 
+        order = new Order({name:name,items:items,address:address,phone:phone,status:status,orderCode:shortId.generate(),email:email,orderDate:new Date().toLocaleDateString("en-GB",{year:"numeric",month:"2-digit", day:"2-digit"})}); // ngày ở dạng days - month - year , year có 4 số , month 2 số , day có 2 số 
         console.log(order)
         order.orderMoney = await order.getOrderMoney();
         const totalMoney = parseFloat(order.orderMoney)  + parseFloat(order.deliveryMoney) ;
         order.totalMoney = totalMoney;
         // Thực hiện xóa quantity của product với size tương ứng
-        removeResult = await order.removeQuantity(); // true hoặc false
+        removeResult = await order.removeQuantity(); // true hoặc 1 error
         if(removeResult!==true){
             const error = new Error(removeResult);
             error.statusCode = 422;
@@ -37,7 +37,7 @@ exports.createOrder = async (req,res,next)=>{
             err.statusCode = 500;
         }
         // Nếu đã remove quantity nhưng lại bị lỗi lưu order thì phải cộng lại quantity
-        if(removeResult === true){
+        if(removeResult !== false){
             const result = await order.addQuantity();
             console.log(result);
         }
