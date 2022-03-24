@@ -57,7 +57,7 @@ app.use(express.static(path.join(__dirname,'public')))
 app.use(express.static(path.join(__dirname,'assets','images')))
 // giảm dung lượng các file asset upload lên
 app.use(compression());
-//set HTTP headers de protect nodeapp
+//set HTTP headers to protect nodeapp
 app.use(helmet());
 
 // để lấy được cookie từ req
